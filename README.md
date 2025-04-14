@@ -1,5 +1,7 @@
 # 🌲 SpigotTimber
 
+<img src="logo.png" width="200" align="right" alt="SpigotTimber Logo">
+
 **SpigotTimber** is a lightweight Minecraft plugin that adds a fun and efficient tree-chopping mechanic. When enabled, breaking a single log causes the entire tree to fall — just like timber! It also supports optional leaf decay, item durability handling, and natural item drops.
 
 ## 📦 Features
@@ -27,9 +29,3 @@ dropNaturally: true
 removeItem:
   use: true
   timer: 5 # in minutes
-```
-
----
-
-<img src="logo.png" width="320" height="320">
-

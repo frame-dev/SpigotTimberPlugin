@@ -1,4 +1,4 @@
-package ch.framedev.spigotTimber;
+package ch.framedev.spigottimber;
 
 import org.bukkit.*;
 import org.bukkit.block.Block;

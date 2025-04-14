@@ -1,6 +1,6 @@
 name: SpigotTimber
 version: '1.0-SNAPSHOT'
-main: ch.framedev.spigotTimber.SpigotTimber
+main: ch.framedev.spigottimber.SpigotTimber
 api-version: '1.21'
 
 commands:

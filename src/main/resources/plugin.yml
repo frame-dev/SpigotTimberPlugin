@@ -1,9 +1,0 @@
-name: SpigotTimber
-version: '1.0-SNAPSHOT'
-main: ch.framedev.spigottimber.SpigotTimber
-api-version: '1.21'
-
-commands:
-  timber:
-    description: Toggle timber mode or configure drop settings
-    usage: /timber [drop]

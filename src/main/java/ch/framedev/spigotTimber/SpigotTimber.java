@@ -55,6 +55,7 @@ public class SpigotTimber extends JavaPlugin implements Listener {
             sender.sendMessage("This command can only be used by players.");
             return true;
         }
+        // Enable or disable the timber mode
         if (args.length == 0) {
             if (!timberEnabled.contains(player.getName())) {
                 timberEnabled.add(player.getName());
@@ -63,7 +64,9 @@ public class SpigotTimber extends JavaPlugin implements Listener {
                 timberEnabled.remove(player.getName());
                 player.sendMessage("Timber mode disabled!");
             }
+            return true;
         } else if (args.length == 1) {
+            // Drop logs naturally or not
             if (args[0].equalsIgnoreCase("drop")) {
                 if (!getConfig().getBoolean("dropNaturally")) {
                     getConfig().set("dropNaturally", true);
@@ -80,6 +83,7 @@ public class SpigotTimber extends JavaPlugin implements Listener {
         return super.onCommand(sender, command, label, args);
     }
 
+    // Check if the block is a log
     private boolean isLog(Block block) {
         Material material = block.getType();
         return material == Material.OAK_LOG || material == Material.SPRUCE_LOG ||
@@ -104,6 +108,7 @@ public class SpigotTimber extends JavaPlugin implements Listener {
         }
     }
 
+    // Break the tree and drop the log
     private void breakTree(Block block, ItemStack itemStack, Set<Block> visited, Location dropLocation) {
         if (!isLog(block) || visited.contains(block)) {
             return; // Stop if the block is not a log or has already been visited
@@ -128,12 +133,13 @@ public class SpigotTimber extends JavaPlugin implements Listener {
                     }
                     Block relativeBlock = block.getRelative(dx, dy, dz);
                     breakTree(relativeBlock, itemStack, visited, dropLocation); // Recursively break adjacent logs
-                    decaySurroundingLeaves(block);
                 }
             }
         }
+        decaySurroundingLeaves(block);
     }
 
+    // Reduce the durability of the item
     private void reduceDurability(ItemStack itemStack) {
         if (itemStack == null || itemStack.getType().getMaxDurability() == 0) {
             return; // Return if the item is null or doesn't have durability (like blocks)
@@ -189,14 +195,13 @@ public class SpigotTimber extends JavaPlugin implements Listener {
         new BukkitRunnable() {
             @Override
             public void run() {
-                World world = Bukkit.getWorld("world");
-                if (world == null)
-                    return;
-                for (Entity entity : world.getEntities()) {
-                    if (entity.getType() == EntityType.DROPPED_ITEM)
-                        entity.remove();
+                for (World world : Bukkit.getWorlds()) {
+                    for (Entity entity : world.getEntities()) {
+                        if (entity.getType() == EntityType.DROPPED_ITEM)
+                            entity.remove();
+                    }
                 }
-                System.out.println("Items Removed");
+                getLogger().info("Items removed from all worlds");
             }
         }.runTaskTimer(this, 0, 20L * 60 * getConfig().getInt("removeItem.timer"));
     }

@@ -33,4 +33,3 @@ removeItem:
   use: false         # Enable/disable automatic item cleanup
   timer: 25          # Cleanup interval in minutes
 ```
-```

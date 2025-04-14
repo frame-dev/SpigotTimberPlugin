@@ -20,6 +20,14 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * SpigotTimber is a plugin that allows players to break trees and drop logs.   
+ * It also allows players to remove items from the world.
+ * 
+ * @author FrameDev
+ * @version 1.0
+ * @since 1.0
+ */
 public class SpigotTimber extends JavaPlugin implements Listener {
 
     private final HashSet<String> timberEnabled = new HashSet<>();

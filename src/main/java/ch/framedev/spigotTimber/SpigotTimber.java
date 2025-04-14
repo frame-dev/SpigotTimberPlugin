@@ -27,16 +27,19 @@ public class SpigotTimber extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
 
+        // Create the config.yml file if it doesn't exist
         getConfig().options().copyDefaults(true);
         saveDefaultConfig();
 
         // Register events
         getServer().getPluginManager().registerEvents(this, this);
 
+        // Register the timber command
         PluginCommand timberCommand = getCommand("timber");
         if (timberCommand != null)
             timberCommand.setExecutor(this);
-        if(getConfig().getBoolean("removeItem.use"))
+        // Enable or disable the item removal task
+        if (getConfig().getBoolean("removeItem.use"))
             removeItems();
         getLogger().info("TimberPlugin has been enabled!");
     }
@@ -48,26 +51,28 @@ public class SpigotTimber extends JavaPlugin implements Listener {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (sender instanceof Player player) {
-            if (args.length == 0) {
-                if (!timberEnabled.contains(player.getName())) {
-                    timberEnabled.add(player.getName());
-                    player.sendMessage("Timber mode enabled!");
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage("This command can only be used by players.");
+            return true;
+        }
+        if (args.length == 0) {
+            if (!timberEnabled.contains(player.getName())) {
+                timberEnabled.add(player.getName());
+                player.sendMessage("Timber mode enabled!");
+            } else {
+                timberEnabled.remove(player.getName());
+                player.sendMessage("Timber mode disabled!");
+            }
+        } else if (args.length == 1) {
+            if (args[0].equalsIgnoreCase("drop")) {
+                if (!getConfig().getBoolean("dropNaturally")) {
+                    getConfig().set("dropNaturally", true);
+                    saveConfig();
+                    player.sendMessage("Naturally dropping logs enabled!");
                 } else {
-                    timberEnabled.remove(player.getName());
-                    player.sendMessage("Timber mode disabled!");
-                }
-            } else if (args.length == 1) {
-                if (args[0].equalsIgnoreCase("drop")) {
-                    if (!getConfig().getBoolean("dropNaturally")) {
-                        getConfig().set("dropNaturally", true);
-                        saveConfig();
-                        player.sendMessage("Naturally dropping logs enabled!");
-                    } else {
-                        getConfig().set("dropNaturally", false);
-                        saveConfig();
-                        player.sendMessage("Naturally dropping logs disabled!");
-                    }
+                    getConfig().set("dropNaturally", false);
+                    saveConfig();
+                    player.sendMessage("Naturally dropping logs disabled!");
                 }
             }
             return true;
@@ -89,8 +94,11 @@ public class SpigotTimber extends JavaPlugin implements Listener {
             if (timberEnabled.contains(event.getPlayer().getName())) {
                 Block block = event.getBlock();
 
+                // Check if the block is a log
                 if (isLog(block)) {
-                    breakTree(block, event.getPlayer().getInventory().getItemInMainHand(), new HashSet<>(), block.getLocation()); // Start breaking the tree
+                    // Break the tree
+                    breakTree(block, event.getPlayer().getInventory().getItemInMainHand(), new HashSet<>(),
+                            block.getLocation()); // Start breaking the tree
                 }
             }
         }
@@ -148,11 +156,12 @@ public class SpigotTimber extends JavaPlugin implements Listener {
                 itemStack.setAmount(0); // Break the item by setting its amount to 0
             } else {
                 damageable.setDamage(newDamage); // Set the new damage
-                itemStack.setItemMeta(meta);     // Apply the updated meta
+                itemStack.setItemMeta(meta); // Apply the updated meta
             }
         }
     }
 
+    // Decay surrounding leaves
     private void decaySurroundingLeaves(Block log) {
         new BukkitRunnable() {
             @Override
@@ -162,8 +171,10 @@ public class SpigotTimber extends JavaPlugin implements Listener {
                         for (int z = -3; z <= 3; z++) {
                             Block nearby = log.getRelative(x, y, z);
                             if (nearby.getType() == Material.OAK_LEAVES || nearby.getType() == Material.BIRCH_LEAVES ||
-                                    nearby.getType() == Material.SPRUCE_LEAVES || nearby.getType() == Material.JUNGLE_LEAVES ||
-                                    nearby.getType() == Material.ACACIA_LEAVES || nearby.getType() == Material.DARK_OAK_LEAVES) {
+                                    nearby.getType() == Material.SPRUCE_LEAVES
+                                    || nearby.getType() == Material.JUNGLE_LEAVES ||
+                                    nearby.getType() == Material.ACACIA_LEAVES
+                                    || nearby.getType() == Material.DARK_OAK_LEAVES) {
                                 nearby.breakNaturally();
                             }
                         }
@@ -173,18 +184,20 @@ public class SpigotTimber extends JavaPlugin implements Listener {
         }.runTaskLater(this, 10L); // Delay by half a second for more natural decay
     }
 
+    // Remove items from the world
     public void removeItems() {
         new BukkitRunnable() {
             @Override
             public void run() {
                 World world = Bukkit.getWorld("world");
-                if(world == null) return;
-                for(Entity entity : world.getEntities()) {
-                    if(entity.getType() == EntityType.DROPPED_ITEM)
+                if (world == null)
+                    return;
+                for (Entity entity : world.getEntities()) {
+                    if (entity.getType() == EntityType.DROPPED_ITEM)
                         entity.remove();
                 }
                 System.out.println("Items Removed");
             }
-        }.runTaskTimer(this, 0, 20L *60*getConfig().getInt("removeItem.timer"));
+        }.runTaskTimer(this, 0, 20L * 60 * getConfig().getInt("removeItem.timer"));
     }
 }

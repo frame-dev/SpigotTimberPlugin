@@ -2,16 +2,16 @@
 
 <img src="logo.png" width="200" align="right" alt="SpigotTimber Logo">
 
-**SpigotTimber** is a lightweight Minecraft plugin that adds a fun and efficient tree-chopping mechanic. When enabled, breaking a single log causes the entire tree to fall — just like timber! It also supports optional leaf decay, item durability handling, and natural item drops.
+**SpigotTimber** is a lightweight Minecraft plugin that adds a fun and efficient tree-chopping mechanic. When enabled, breaking a single log causes the entire tree to fall — just like timber! It also supports leaf decay, tool durability handling, and configurable item drop behavior.
 
 ## 📦 Features
 
 - ✅ Toggleable timber mode per player (`/timber`)
 - 🌳 Automatically breaks all connected logs in a tree
-- 💨 Optional natural drop behavior
-- 🍃 Optional leaf decay for realism
+- 💨 Configurable drop behavior (at original location or natural drop)
+- 🍃 Automatic leaf decay for realism
 - ⛏ Proper tool durability reduction (axes only)
-- 🧹 Configurable dropped item remover
+- 🧹 Configurable dropped item cleanup system
 
 ## 📥 Installation
 
@@ -24,8 +24,13 @@
 ```yaml
 # config.yml
 
-dropNaturally: true
+# Whether logs should drop naturally (at their original location)
+# or at the location of the first broken block
+dropNaturally: false
 
+# Configure automatic item cleanup
 removeItem:
-  use: true
-  timer: 5 # in minutes
+  use: false         # Enable/disable automatic item cleanup
+  timer: 25          # Cleanup interval in minutes
+```
+```

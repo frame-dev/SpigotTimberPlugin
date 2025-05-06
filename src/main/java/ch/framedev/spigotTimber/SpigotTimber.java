@@ -188,8 +188,9 @@ public class SpigotTimber extends JavaPlugin implements Listener {
                                     nearby.getType() == Material.SPRUCE_LEAVES
                                     || nearby.getType() == Material.JUNGLE_LEAVES ||
                                     nearby.getType() == Material.ACACIA_LEAVES
-                                    || nearby.getType() == Material.DARK_OAK_LEAVES) {
-                                nearby.breakNaturally();
+                                    || nearby.getType() == Material.DARK_OAK_LEAVES ||
+                                    nearby.getType() == Material.CHERRY_LEAVES) {
+                                 nearby.breakNaturally();
                             }
                         }
                     }
